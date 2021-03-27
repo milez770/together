@@ -23,6 +23,7 @@ wss.on('connection', (ws) => {
                 position: message.position
             }
             try{
+                data = JSON.stringify(data);
                 to(message.partner, data)
             }
             catch(e){
