@@ -20,7 +20,7 @@ wss.on('connection', (ws) => {
         else if(sockets[message.partner]){
             var data = {
                 from: message.name,
-                posistion: message.position
+                position: message.position
             }
             try{
                 to(message.partner, data)
