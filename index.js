@@ -1,5 +1,5 @@
 var WebSocketServer = require('ws').Server;
-var wss = new WebSocketServer({port: 3100});
+var wss = new WebSocketServer({port: process.env.PORT || 3100});
 
 wss.on('connection', (ws) => {
     console.log('connected')
