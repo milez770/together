@@ -15,31 +15,37 @@ wss.on('connection', (ws) => {
         console.log(message);
         if(message.initial){
             console.log('setup');
-            sockets[message.name] = ws;
+            sockets[message.uid] = ws;
         }
-        else if(sockets[message.partner]){
-            var data = {
-                from: message.name,
-                position: message.position
-            }
-            try{
-                data = JSON.stringify(data);
-                to(message.partner, data)
-            }
-            catch(e){
-
+        else{
+            if(message.relation){
+                for(var ii=0; ii<message.relation.length; ii++){
+                    var user = message.relation[ii]
+                    if(sockets[user] && sockets[user].readyState === WebSocket.OPEN){
+                        var data = {
+                            from: message.uid,
+                            position: message.position
+                        }
+                        try{
+                            data = JSON.stringify(data);
+                            to(user, data)
+                        }
+                        catch(e){
+            
+                        }
+                    }
+                }
             }
         }
         
         if(message.position){
             console.log(message);
             var fakedata = {
-                from: message.name,
+                from: message.uid,
                 position: [message.position[0]+10, message.position[1]+10]
             }
             fakedata = JSON.stringify(fakedata);
-            console.log(fakedata);
-            to(message.name, fakedata);
+            to(message.uid, fakedata);
         }
         // else{
         //     data = {
