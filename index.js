@@ -12,7 +12,7 @@ function to(user, data) {
 wss.on('connection', (ws) => {
     ws.on('message', (message) => {
         message = JSON.parse(message);
-        console.log(message);
+        // console.log(message);
         if(message.initial){
             console.log('setup');
             sockets[message.uid] = ws;
@@ -37,16 +37,17 @@ wss.on('connection', (ws) => {
                 }
             }
         }
-        
-        if(message.position){
-            console.log(message);
-            var fakedata = {
-                from: message.uid,
-                position: [message.position[0]+10, message.position[1]+10]
-            }
-            fakedata = JSON.stringify(fakedata);
-            to(message.uid, fakedata);
-        }
+        //dev only
+        // if(message.position){
+        //     console.log(message);
+        //     var fakedata = {
+        //         from: message.uid,
+        //         position: [message.position[0]+10, message.position[1]+10]
+        //     }
+        //     fakedata = JSON.stringify(fakedata);
+        //     to(message.uid, fakedata);
+        // }
+
         // else{
         //     data = {
 
