@@ -12,16 +12,16 @@ function to(user, data) {
 wss.on('connection', (ws) => {
     ws.on('message', (message) => {
         message = JSON.parse(message);
-        // console.log(message);
+        console.log(message);
         if(message.initial){
-            console.log('setup');
             sockets[message.uid] = ws;
         }
         else{
             if(message.relation){
                 for(var ii=0; ii<message.relation.length; ii++){
-                    var user = message.relation[ii]
+                    var user = message.relation[ii].uid;
                     if(sockets[user] && sockets[user].readyState === WebSocket.OPEN){
+                        console.log('gogo')
                         var data = {
                             from: message.uid,
                             position: message.position
