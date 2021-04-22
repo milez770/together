@@ -14,6 +14,7 @@ wss.on('connection', (ws) => {
         message = JSON.parse(message);
         // console.log(message);
         if(message.initial){
+            console.log('new player');
             sockets[message.uid] = ws;
         }
         else{
