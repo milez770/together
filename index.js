@@ -14,13 +14,16 @@ wss.on('connection', (ws) => {
         message = JSON.parse(message);
         // console.log(message);
         if(message.initial){
-            console.log('new player');
+            console.log('new player', message.uid);
             sockets[message.uid] = ws;
         }
         else{
             if(message.relation){
+                // console.log(message);
                 for(var ii=0; ii<message.relation.length; ii++){
                     var user = message.relation[ii].uid;
+                    // console.log(user);
+                    console.log(sockets[user] !== undefined);
                     if(sockets[user] && sockets[user].readyState === WebSocket.OPEN){
                         // console.log('gogo')
                         var data = {
