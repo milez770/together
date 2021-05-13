@@ -23,7 +23,8 @@ wss.on('connection', (ws) => {
                 for(var ii=0; ii<message.relation.length; ii++){
                     var user = message.relation[ii].uid;
                     // console.log(user);
-                    console.log(sockets[user] !== undefined);
+                    // console.log(sockets[user] !== undefined);
+                    // console.log(message);
                     if(sockets[user] && sockets[user].readyState === WebSocket.OPEN){
                         // console.log('gogo')
                         var data = {
