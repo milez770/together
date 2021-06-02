@@ -12,32 +12,58 @@ function to(user, data) {
 wss.on('connection', (ws) => {
     ws.on('message', (message) => {
         message = JSON.parse(message);
-        // console.log(message);
         if(message.initial){
             console.log('new player', message.uid);
             sockets[message.uid] = ws;
         }
         else{
             if(message.relation){
-                // console.log(message);
                 for(var ii=0; ii<message.relation.length; ii++){
                     var user = message.relation[ii].uid;
-                    // console.log(user);
-                    // console.log(sockets[user] !== undefined);
-                    // console.log(message);
                     if(sockets[user] && sockets[user].readyState === WebSocket.OPEN){
-                        // console.log('gogo')
-                        var data = {
-                            from: message.uid,
-                            position: message.position
+                        if(message.position){
+                            var data = {
+                                from: message.uid,
+                                position: message.position
+                            }
+                            try{
+                                data = JSON.stringify(data);
+                                to(user, data)
+                            }
+                            catch(e){
+                
+                            }
                         }
-                        try{
-                            data = JSON.stringify(data);
-                            to(user, data)
+                        else if(message.share){
+                            // console.log('share')
+                            var data = {
+                                from: message.uid,
+                                share: message.share
+                            }
+                            try{
+                                data = JSON.stringify(data);
+                                to(user, data)
+                            }
+                            catch(e){
+                
+                            }
                         }
-                        catch(e){
-            
+                        else if(message.emoji){
+                            // console.log('emoji', message.emoji);
+                            var data = {
+                                from: message.uid,
+                                emoji: message.emoji
+                            }
+                            try{
+                                data = JSON.stringify(data);
+                                to(user, data)
+                            }
+                            catch(e){
+                
+                            }
                         }
+                    
+                        
                     }
                 }
             }
