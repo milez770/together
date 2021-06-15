@@ -20,9 +20,12 @@ wss.on('connection', (ws) => {
             if(message.relation){
                 for(var ii=0; ii<message.relation.length; ii++){
                     var user = message.relation[ii].uid;
+                    var self = message.uid;
+                    console.log(self)
                     if(sockets[user] && sockets[user].readyState === WebSocket.OPEN){
                         if(message.position){
                             var data = {
+                                type:"move",
                                 from: message.uid,
                                 position: message.position
                             }
@@ -37,6 +40,7 @@ wss.on('connection', (ws) => {
                         else if(message.share){
                             // console.log('share')
                             var data = {
+                                type:"share",
                                 from: message.uid,
                                 share: message.share
                             }
@@ -51,6 +55,7 @@ wss.on('connection', (ws) => {
                         else if(message.emoji){
                             // console.log('emoji', message.emoji);
                             var data = {
+                                type:"emoji",
                                 from: message.uid,
                                 emoji: message.emoji
                             }
@@ -62,32 +67,29 @@ wss.on('connection', (ws) => {
                 
                             }
                         }
+                        else if(message.makechat){
+                            let data = {
+                                type:"initChat",
+                                from: message.from,
+                                makechat: true,
+                                id: message.id,
+                                at: message.at
+                            }
+                            console.log("initChat", message.id);
+                            openChat(self, user, data);
+                            try{
+                                data = JSON.stringify(data);
+                                to(user, data)
+                            }
+                            catch(e){
+                
+                            }
+                        }
                     
-                        
                     }
                 }
             }
         }
-        //dev only
-        // if(message.position){
-        //     console.log(message);
-        //     var fakedata = {
-        //         from: message.uid,
-        //         position: [message.position[0]+10, message.position[1]+10]
-        //     }
-        //     fakedata = JSON.stringify(fakedata);
-        //     to(message.uid, fakedata);
-        // }
-
-        // else{
-        //     data = {
-
-        //     }
-        //     to(message.partner, data);
-        // }
-        // for(var key in message){
-        //     // console.log(key, message[key]);
-        // }
     });
     // setInterval(function(){
     //     var position = [Math.random()*100, Math.random()*100];
@@ -96,3 +98,29 @@ wss.on('connection', (ws) => {
     //     // console.log(position);
     // }, 400)
 });
+
+function openChat(self, user, data){
+    let counter = 30;
+    let waitEnter = setInterval(function(){
+        console.log(counter);
+        let countdown = {
+            type:"countdown",
+            chat:data,
+            counter:counter
+        }
+        countdown = JSON.stringify(countdown);
+        to(user, countdown);
+        to(self, countdown);
+        counter --;
+        if(counter < 0){
+            let expire = {
+                type:"expireChat",
+                chat:data
+            }
+            expire = JSON.stringify(expire);
+            to(user, expire);
+            to(self, expire);
+            clearInterval(waitEnter);
+        }
+    }, 1000)
+  }
